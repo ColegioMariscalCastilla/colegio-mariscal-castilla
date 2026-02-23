@@ -1,0 +1,137 @@
+Actúa como un ingeniero senior full-stack especializado en arquitectura escalable y experiencia de usuario (UX/UI).
+
+Genera una aplicación web completa lista para producción llamada:
+
+"Sistema de Asistencia Escolar - Mariscal Castilla"
+
+--------------------------------------------------
+REQUISITOS TECNOLÓGICOS
+--------------------------------------------------
+
+- Frontend: React (Vite o Next.js)
+- Backend: Node.js + Express (o API Routes de Next.js)
+- Base de datos: Supabase (PostgreSQL obligatorio)
+- Autenticación: Supabase Auth con control de acceso por roles
+- Estilo: Diseño minimalista usando TailwindCSS
+- Sistema de notificaciones: Toast minimalistas (ejemplo: react-hot-toast o similar)
+- Gráficos: Recharts o Chart.js
+- Exportación a Excel: xlsx o exceljs
+- Arquitectura limpia, modular y escalable
+- Código completamente exportable
+- Uso de variables de entorno para claves de Supabase
+
+--------------------------------------------------
+SISTEMA DE NOTIFICACIONES (OBLIGATORIO)
+--------------------------------------------------
+
+Implementar notificaciones tipo toast minimalistas, elegantes y no invasivas.
+
+Las notificaciones deben aparecer cuando:
+
+DIRECTORA:
+- Alumno agregado correctamente → "Alumno registrado correctamente"
+- Alumno eliminado → "Alumno eliminado correctamente"
+- Alumno editado → "Datos actualizados correctamente"
+- Profesor agregado → "Profesor agregado correctamente"
+- Aula agregada → "Aula creada correctamente"
+- Error en cualquier acción → Mostrar toast rojo con mensaje claro
+
+PROFESOR:
+- Asistencia guardada → "Asistencia guardada correctamente"
+- Error al guardar asistencia → "Error al registrar asistencia"
+
+Las notificaciones deben:
+- Aparecer en la esquina superior derecha
+- Desaparecer automáticamente después de 3 segundos
+- Tener diseño minimalista
+- Tener animación suave
+
+--------------------------------------------------
+ROLES Y PERMISOS
+--------------------------------------------------
+
+1) DIRECTORA (Acceso total)
+
+- CRUD alumnos
+- Buscador optimizado para 3000 alumnos
+- Ver historial completo por alumno
+- Ver estadísticas
+- Agregar profesores
+- Agregar aulas
+- Exportar asistencias a Excel
+- Dashboard con métricas generales
+
+2) PROFESOR
+
+Flujo obligatorio:
+
+Paso 1 → Mostrar:
+   - Turno Mañana
+   - Turno Tarde
+
+Paso 2 → Mostrar salones según turno
+
+Paso 3 → Mostrar lista de alumnos del salón
+
+Paso 4 → Tomar asistencia (Presente / Ausente)
+
+Paso 5 → Botón "Guardar Asistencia"
+   → Al guardar mostrar notificación de éxito
+
+Guardar todo en Supabase.
+
+Exportar Excel con:
+   fecha, nombre_del_alumno, DNI, asistencia
+
+3) ESTUDIANTE
+
+- Solo ver su perfil
+- Ver historial de asistencias
+- Ver estadísticas en gráfico
+- Sin permisos de edición
+
+--------------------------------------------------
+BASE DE DATOS (SUPABASE)
+--------------------------------------------------
+
+Tablas:
+
+- users (id, nombre, email, rol)
+- students (id, nombre, dni, classroom_id)
+- teachers (id, nombre, email)
+- classrooms (id, nombre, turno)
+- attendance (id, student_id, fecha, estado, registrado_por)
+
+Relaciones bien definidas.
+Índices para búsquedas rápidas por DNI y nombre.
+Implementar RLS (Row Level Security) según rol.
+
+--------------------------------------------------
+REQUISITOS FUNCIONALES
+--------------------------------------------------
+
+- Buscador instantáneo
+- Paginación
+- Rutas protegidas por rol
+- Middleware de autorización
+- Manejo de errores
+- Estados loading
+- Diseño responsive
+- Dashboard con:
+    - Total alumnos
+    - Asistencia del día
+    - Porcentaje de ausencias
+
+--------------------------------------------------
+ENTREGABLES OBLIGATORIOS
+--------------------------------------------------
+
+1) Estructura completa del proyecto
+2) Código frontend completo
+3) Código backend completo
+4) SQL para Supabase
+5) Middleware de roles
+6) Implementación de notificaciones toast
+7) Funcionalidad Excel
+8) Instrucciones para instalar
+9) Instrucciones de despliegue
