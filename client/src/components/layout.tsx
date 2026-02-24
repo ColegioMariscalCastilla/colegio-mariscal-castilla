@@ -17,22 +17,23 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   if (!user) return <>{children}</>;
 
   const adminLinks = [
-    { href: "/", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/students", label: "Students", icon: GraduationCap },
-    { href: "/teachers", label: "Teachers", icon: Users },
-    { href: "/classrooms", label: "Classrooms", icon: School },
+    { href: "/", label: "Panel", icon: LayoutDashboard },
+    { href: "/students", label: "Alumnos", icon: GraduationCap },
+    { href: "/teachers", label: "Profesores", icon: Users },
+    { href: "/classrooms", label: "Salones", icon: School },
   ];
 
   const teacherLinks = [
-    { href: "/", label: "Take Attendance", icon: ClipboardCheck },
+    { href: "/", label: "Tomar Asistencia", icon: ClipboardCheck },
   ];
 
   const studentLinks = [
-    { href: "/", label: "My Profile", icon: UserCircle },
+    { href: "/", label: "Mi Perfil", icon: UserCircle },
   ];
 
-  const links = user.rol === 'DIRECTORA' ? adminLinks 
-              : user.rol === 'PROFESOR' ? teacherLinks 
+  const role = (user.rol || '').toString().toLowerCase();
+  const links = role === 'directora' ? adminLinks
+              : role === 'profesor' || role === 'profesora' ? teacherLinks
               : studentLinks;
 
   return (
@@ -45,7 +46,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </div>
           <div>
             <h1 className="font-display font-bold text-lg leading-tight">EduManage</h1>
-            <p className="text-xs text-muted-foreground font-medium">{user.rol}</p>
+            <p className="text-xs text-muted-foreground font-medium">{role === 'directora' ? 'directora' : role === 'profesor' ? 'profesor' : 'estudiante'}</p>
           </div>
         </div>
 
@@ -85,7 +86,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-destructive hover:bg-destructive/10 transition-colors"
           >
             <LogOut className="w-4 h-4" />
-            Sign Out
+            Cerrar sesión
           </button>
         </div>
       </aside>

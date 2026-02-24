@@ -24,8 +24,8 @@ export default function Teachers() {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <PageHeader 
-        title="Teachers" 
-        description="Manage teaching staff accounts."
+        title="Profesores" 
+        description="Administrar cuentas del personal docente."
         action={
           <button onClick={() => setIsModalOpen(true)} className="btn-primary flex items-center gap-2">
             <Plus className="w-4 h-4" /> Add Teacher
@@ -51,23 +51,23 @@ export default function Teachers() {
         ))}
         {teachers?.length === 0 && (
           <div className="col-span-full p-8 text-center text-muted-foreground bg-card border border-dashed rounded-2xl">
-            No teachers registered yet.
+            No hay profesores registrados.
           </div>
         )}
       </div>
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Add New Teacher">
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Agregar nuevo profesor">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-bold mb-1">Full Name</label>
+            <label className="block text-sm font-bold mb-1">Nombre completo</label>
             <input required type="text" className="input-base" value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})} />
           </div>
           <div>
-            <label className="block text-sm font-bold mb-1">Email</label>
+            <label className="block text-sm font-bold mb-1">Correo electrónico</label>
             <input required type="email" className="input-base" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
           </div>
           <div className="pt-4 border-t border-border">
-            <h3 className="text-sm font-bold text-muted-foreground mb-3">Login Credentials</h3>
+            <h3 className="text-sm font-bold text-muted-foreground mb-3">Credenciales de acceso</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-bold mb-1">Username</label>
@@ -80,9 +80,9 @@ export default function Teachers() {
             </div>
           </div>
           <div className="flex justify-end gap-3 pt-4">
-            <button type="button" onClick={() => setIsModalOpen(false)} className="btn-outline">Cancel</button>
-            <button type="submit" disabled={createMutation.isPending} className="btn-primary">
-              {createMutation.isPending ? "Creating..." : "Save Teacher"}
+            <button type="button" onClick={() => setIsModalOpen(false)} className="btn-outline">Cancelar</button>
+            <button type="submit" disabled={createMutation.isLoading} className="btn-primary">
+              {createMutation.isLoading ? "Creando..." : "Guardar profesor"}
             </button>
           </div>
         </form>

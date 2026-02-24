@@ -1,9 +1,8 @@
-import { db } from "./db";
+import { db, pool } from "./db";
 import { eq, and } from "drizzle-orm";
 import { users, classrooms, teachers, students, attendance, InsertUser, User, InsertClassroom, Classroom, InsertTeacher, Teacher, InsertStudent, Student, InsertAttendance, Attendance } from "@shared/schema";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
-import { pool } from "./db";
 
 const PostgresSessionStore = connectPg(session);
 
@@ -107,7 +106,8 @@ export class DatabaseStorage implements IStorage {
     }).from(attendance).innerJoin(students, eq(attendance.studentId, students.id));
 
     const conditions = [];
-    if (date) conditions.push(eq(attendance.fecha, new Date(date)));
+    // Compare date-only strings (YYYY-MM-DD) to avoid timezone issues
+    if (date) conditions.push(eq(attendance.fecha, date));
     if (studentId) conditions.push(eq(attendance.studentId, studentId));
     if (classroomId) conditions.push(eq(students.classroomId, classroomId));
 

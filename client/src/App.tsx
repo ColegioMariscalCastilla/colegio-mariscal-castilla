@@ -21,7 +21,9 @@ function ProtectedRoute({ component: Component, allowedRoles }: { component: any
   
   if (isLoading) return <LoadingSpinner size="lg" />;
   if (!user) return <Redirect to="/login" />;
-  if (!allowedRoles.includes(user.rol)) return <Redirect to="/" />;
+  const role = (user.rol || '').toString().toUpperCase();
+  const allowed = allowedRoles.map(r => r.toString().toUpperCase());
+  if (!allowed.includes(role)) return <Redirect to="/" />;
   
   return <Component />;
 }
@@ -39,8 +41,8 @@ function Router() {
 
       <Route path="/">
         {!user ? <Redirect to="/login" /> : 
-         user.rol === 'DIRECTORA' ? <AppLayout><AdminDashboard /></AppLayout> :
-         user.rol === 'PROFESOR' ? <AppLayout><TeacherAttendance /></AppLayout> :
+         (user.rol || '').toString().toUpperCase() === 'DIRECTORA' ? <AppLayout><AdminDashboard /></AppLayout> :
+         (user.rol || '').toString().toUpperCase() === 'PROFESOR' ? <AppLayout><TeacherAttendance /></AppLayout> :
          <AppLayout><StudentProfile /></AppLayout>
         }
       </Route>

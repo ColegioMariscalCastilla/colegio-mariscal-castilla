@@ -28,8 +28,8 @@ export function useCreateClassroom() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [api.classrooms.list.path] });
-      toast.success("Classroom created successfully");
+      toast.success("Salón creado correctamente");
     },
-    onError: () => toast.error("Failed to create classroom"),
+    onError: () => toast.error("Error creando el salón"),
   });
 }

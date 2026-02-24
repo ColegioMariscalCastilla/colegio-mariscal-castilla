@@ -5,7 +5,7 @@ import { setupAuth } from "./auth";
 import { api } from "@shared/routes";
 import { z } from "zod";
 import passport from "passport";
-import { db } from "./db";
+import { db, pool } from "./db";
 import { users } from "@shared/schema";
 
 export async function registerRoutes(
@@ -39,8 +39,23 @@ export async function registerRoutes(
   app.post(api.classrooms.create.path, async (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
     const parsed = api.classrooms.create.input.parse(req.body);
-    const result = await storage.createClassroom(parsed);
-    res.status(201).json(result);
+    // Normalize turno values to match DB constraint (lowercase spanish tokens)
+    const normalizeTurno = (t: string | undefined) => {
+      if (!t) return t;
+      const v = t.toLowerCase().trim();
+      if (v === 'mañana' || v === 'manana' || v === 'manha' || v === 'ma¤ana') return 'mañana';
+      if (v === 'tarde') return 'tarde';
+      return v;
+    };
+
+    const payload = { ...parsed, turno: normalizeTurno(parsed.turno) };
+    try {
+      const result = await storage.createClassroom(payload);
+      res.status(201).json(result);
+    } catch (err) {
+      console.error('Error creating classroom', err);
+      res.status(500).send(String(err));
+    }
   });
 
   app.get(api.teachers.list.path, async (req, res) => {
@@ -60,7 +75,7 @@ export async function registerRoutes(
       username: parsed.username,
       password: hashed,
       nombre: parsed.nombre,
-      rol: 'PROFESOR'
+      rol: 'profesor'
     });
 
     const teacher = await storage.createTeacher({
@@ -88,7 +103,7 @@ export async function registerRoutes(
       username: parsed.username,
       password: hashed,
       nombre: parsed.nombre,
-      rol: 'ESTUDIANTE'
+      rol: 'estudiante'
     });
 
     const student = await storage.createStudent({
@@ -130,10 +145,14 @@ export async function registerRoutes(
     
     // En batch
     for (const record of parsed.records) {
+      // Store fecha as a date-only string (YYYY-MM-DD) to avoid timezone mismatches
+      // Normalize estado to lowercase values accepted by DB ('presente'|'ausente')
+      const estadoNorm = record.estado ? record.estado.toString().toLowerCase().trim() : record.estado;
+      console.log('Creating attendance record', { studentId: record.studentId, fecha: parsed.fecha, estadoNorm, registradoPor: req.user!.id });
       await storage.createAttendance({
         studentId: record.studentId,
-        fecha: new Date(parsed.fecha),
-        estado: record.estado,
+        fecha: parsed.fecha,
+        estado: estadoNorm,
         registradoPor: req.user!.id
       });
     }
@@ -178,15 +197,24 @@ export async function registerRoutes(
 
   // Seed
   try {
-    const existingUsers = await db.select().from(users).limit(1);
-    if (existingUsers.length === 0) {
-      const hashed = await hashPassword('admin123');
-      await storage.createUser({
-        username: 'admin',
-        password: hashed,
-        nombre: 'Directora Mariscal Castilla',
-        rol: 'DIRECTORA'
-      });
+    // Check that the users table has the expected `username` column before seeding.
+    const columnCheck = await pool.query(
+      `SELECT column_name FROM information_schema.columns WHERE table_name='users' AND column_name='username'`
+    );
+    const hasUsername = columnCheck && columnCheck.rows && columnCheck.rows.length > 0;
+    if (hasUsername) {
+      const existingUsers = await db.select().from(users).limit(1);
+      if (existingUsers.length === 0) {
+        const hashed = await hashPassword('admin123');
+        await storage.createUser({
+          username: 'admin',
+          password: hashed,
+          nombre: 'Directora Mariscal Castilla',
+          rol: 'directora'
+        });
+      }
+    } else {
+      console.warn('Skipping DB seed: users.username column not present yet.');
     }
   } catch (error) {
     console.error("Error seeding DB (tables might not exist yet):", error);

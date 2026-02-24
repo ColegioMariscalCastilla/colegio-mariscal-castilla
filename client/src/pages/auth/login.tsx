@@ -24,24 +24,24 @@ export default function Login() {
           <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-4 shadow-inner">
             <School className="w-8 h-8" />
           </div>
-          <h1 className="text-3xl font-bold text-foreground">Welcome Back</h1>
-          <p className="text-muted-foreground mt-2">Sign in to EduManage</p>
+          <h1 className="text-3xl font-bold text-foreground">Colegio Mariscal Castilla</h1>
+          <p className="text-muted-foreground mt-2">Inicia sesión</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-1.5">
-            <label className="text-sm font-bold text-foreground/80 pl-1">Username</label>
+            <label className="text-sm font-bold text-foreground/80 pl-1">Usuario</label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="input-base bg-white/50"
-              placeholder="Enter your username"
+              placeholder="Ingrese su usuario"
               required
             />
           </div>
           <div className="space-y-1.5">
-            <label className="text-sm font-bold text-foreground/80 pl-1">Password</label>
+            <label className="text-sm font-bold text-foreground/80 pl-1">Contraseña</label>
             <input
               type="password"
               value={password}
@@ -56,7 +56,7 @@ export default function Login() {
             disabled={isLoggingIn || !username || !password}
             className="w-full btn-primary flex items-center justify-center gap-2 mt-6"
           >
-            {isLoggingIn ? <Loader2 className="w-5 h-5 animate-spin" /> : "Sign In"}
+            {isLoggingIn ? <Loader2 className="w-5 h-5 animate-spin" /> : "Iniciar sesión"}
           </button>
         </form>
       </div>

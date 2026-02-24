@@ -1,7 +1,7 @@
 import { useDashboardStats } from "@/hooks/use-dashboard";
 import { useExportAttendance } from "@/hooks/use-attendance";
 import { PageHeader, Card, LoadingSpinner } from "@/components/ui-components";
-import { Users, UserCheck, AlertTriangle, Download } from "lucide-react";
+import { Users, UserCheck, AlertTriangle, Download, School } from "lucide-react";
 
 export default function AdminDashboard() {
   const { data: stats, isLoading } = useDashboardStats();
@@ -12,16 +12,16 @@ export default function AdminDashboard() {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <PageHeader 
-        title="Dashboard" 
-        description="Overview of your school's attendance and statistics."
+        title="Panel" 
+        description="Resumen de la asistencia y estadísticas del colegio."
         action={
           <button 
             onClick={() => exportMutation.mutate()}
-            disabled={exportMutation.isPending}
+            disabled={exportMutation.isLoading}
             className="btn-outline flex items-center gap-2"
           >
             <Download className="w-4 h-4" />
-            {exportMutation.isPending ? "Exporting..." : "Export Attendance"}
+            {exportMutation.isLoading ? "Exportando..." : "Exportar asistencia"}
           </button>
         }
       />
@@ -33,7 +33,7 @@ export default function AdminDashboard() {
               <Users className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-sm font-bold text-muted-foreground">Total Students</p>
+              <p className="text-sm font-bold text-muted-foreground">Total de alumnos</p>
               <h3 className="text-3xl font-display font-bold mt-1">{stats?.totalStudents || 0}</h3>
             </div>
           </div>
@@ -45,7 +45,7 @@ export default function AdminDashboard() {
               <UserCheck className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-sm font-bold text-muted-foreground">Today's Attendance</p>
+              <p className="text-sm font-bold text-muted-foreground">Asistencia de hoy</p>
               <h3 className="text-3xl font-display font-bold mt-1">{stats?.todayAttendance || 0}</h3>
             </div>
           </div>
@@ -57,7 +57,7 @@ export default function AdminDashboard() {
               <AlertTriangle className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-sm font-bold text-muted-foreground">Absence Rate</p>
+              <p className="text-sm font-bold text-muted-foreground">% de ausencias</p>
               <h3 className="text-3xl font-display font-bold mt-1">{stats?.absencePercentage?.toFixed(1) || 0}%</h3>
             </div>
           </div>
@@ -68,15 +68,12 @@ export default function AdminDashboard() {
         <div className="w-16 h-16 bg-secondary/50 rounded-full flex items-center justify-center mb-4">
           <School className="w-8 h-8 text-muted-foreground" />
         </div>
-        <h3 className="text-xl font-bold">Ready for the day</h3>
+        <h3 className="text-xl font-bold">Listo para el día</h3>
         <p className="text-muted-foreground mt-2 max-w-md">
-          Navigate through the sidebar to manage students, teachers, and classrooms. 
-          Use the export button above to generate Excel reports for attendance.
+          Navega por la barra lateral para administrar alumnos, profesores y salones.
+          Usa el botón de exportar arriba para generar informes de asistencia en Excel.
         </p>
       </Card>
     </div>
   );
 }
-
-// Ensure School is imported if used
-import { School } from "lucide-react";

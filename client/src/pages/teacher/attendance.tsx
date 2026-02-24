@@ -17,7 +17,9 @@ export default function TeacherAttendance() {
   const saveMutation = useSaveAttendanceBatch();
 
   const handleTurnoSelect = (turno: string) => {
-    setSelectedTurno(turno);
+    // Normalize to lowercase tokens used in DB ('mañana'|'tarde')
+    const normalized = turno.toString().toLowerCase().trim();
+    setSelectedTurno(normalized);
     setSelectedClassroom(null);
     setStep(2);
   };
@@ -28,11 +30,11 @@ export default function TeacherAttendance() {
     setStep(3);
   };
 
-  const toggleStudent = (studentId: number, estado: 'Presente' | 'Ausente') => {
+  const toggleStudent = (studentId: number, estado: 'presente' | 'ausente') => {
     setAttendanceState(prev => ({ ...prev, [studentId]: estado }));
   };
 
-  const markAll = (estado: 'Presente' | 'Ausente') => {
+  const markAll = (estado: 'presente' | 'ausente') => {
     if (!students) return;
     const newState: Record<number, string> = {};
     students.forEach(s => newState[s.id] = estado);
@@ -45,7 +47,7 @@ export default function TeacherAttendance() {
     // Check if all students are marked
     const unmarked = students.filter(s => !attendanceState[s.id]);
     if (unmarked.length > 0) {
-      alert(`Please mark attendance for all students. ${unmarked.length} remaining.`);
+      alert(`Por favor marca la asistencia para todos los alumnos. ${unmarked.length} restante(s).`);
       return;
     }
 
@@ -66,12 +68,16 @@ export default function TeacherAttendance() {
     setAttendanceState({});
   };
 
-  const filteredClassrooms = classrooms?.filter(c => c.turno === selectedTurno) || [];
+  const filteredClassrooms = classrooms?.filter(c => {
+    const turnoC = (c.turno || '').toString().toLowerCase();
+    const sel = (selectedTurno || '').toString().toLowerCase();
+    return turnoC === sel;
+  }) || [];
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <PageHeader 
-        title="Take Attendance" 
+        title="Tomar asistencia" 
         description={format(new Date(), "EEEE, MMMM do, yyyy")}
       />
 
@@ -87,17 +93,17 @@ export default function TeacherAttendance() {
       {step === 1 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 animate-in slide-in-from-right-8">
           <button onClick={() => handleTurnoSelect('Mañana')} className="text-left group">
-            <Card className="p-8 hover-lift border-2 border-transparent group-hover:border-amber-400/50 transition-all">
+              <Card className="p-8 hover-lift border-2 border-transparent group-hover:border-amber-400/50 transition-all">
               <Sun className="w-12 h-12 text-amber-500 mb-4" />
               <h2 className="text-2xl font-bold">Turno Mañana</h2>
-              <p className="text-muted-foreground mt-2">Morning shift classes</p>
+              <p className="text-muted-foreground mt-2">Clases del turno mañana</p>
             </Card>
           </button>
           <button onClick={() => handleTurnoSelect('Tarde')} className="text-left group">
-            <Card className="p-8 hover-lift border-2 border-transparent group-hover:border-indigo-400/50 transition-all">
+              <Card className="p-8 hover-lift border-2 border-transparent group-hover:border-indigo-400/50 transition-all">
               <Moon className="w-12 h-12 text-indigo-500 mb-4" />
               <h2 className="text-2xl font-bold">Turno Tarde</h2>
-              <p className="text-muted-foreground mt-2">Afternoon shift classes</p>
+              <p className="text-muted-foreground mt-2">Clases del turno tarde</p>
             </Card>
           </button>
         </div>
@@ -105,8 +111,8 @@ export default function TeacherAttendance() {
 
       {step === 2 && (
         <div className="animate-in slide-in-from-right-8">
-          <button onClick={() => setStep(1)} className="text-sm font-bold text-muted-foreground hover:text-foreground mb-6 inline-flex items-center gap-1">
-            ← Back to Shifts
+            <button onClick={() => setStep(1)} className="text-sm font-bold text-muted-foreground hover:text-foreground mb-6 inline-flex items-center gap-1">
+            ← Volver a turnos
           </button>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {loadingClassrooms ? <LoadingSpinner /> : filteredClassrooms.map(c => (
@@ -114,12 +120,12 @@ export default function TeacherAttendance() {
                 <Card className="p-6 hover-lift hover:border-primary/50 transition-all">
                   <Users className="w-8 h-8 text-primary mb-3" />
                   <h3 className="text-xl font-bold">{c.nombre}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">Select to take attendance</p>
+                    <p className="text-sm text-muted-foreground mt-1">Seleccionar para tomar asistencia</p>
                 </Card>
               </button>
             ))}
             {filteredClassrooms.length === 0 && !loadingClassrooms && (
-              <p className="col-span-full p-8 text-center text-muted-foreground border border-dashed rounded-2xl">No classrooms found for this shift.</p>
+                  <p className="col-span-full p-8 text-center text-muted-foreground border border-dashed rounded-2xl">No hay salones para este turno.</p>
             )}
           </div>
         </div>
@@ -129,11 +135,11 @@ export default function TeacherAttendance() {
         <div className="animate-in slide-in-from-right-8">
           <div className="flex items-center justify-between mb-6">
             <button onClick={() => setStep(2)} className="text-sm font-bold text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
-              ← Back to Classrooms
+              ← Volver a salones
             </button>
             <div className="flex gap-2">
-              <button onClick={() => markAll('Presente')} className="text-xs font-bold px-3 py-1.5 rounded-lg bg-green-100 text-green-700 hover:bg-green-200 transition-colors">Mark All Present</button>
-              <button onClick={() => markAll('Ausente')} className="text-xs font-bold px-3 py-1.5 rounded-lg bg-rose-100 text-rose-700 hover:bg-rose-200 transition-colors">Mark All Absent</button>
+              <button onClick={() => markAll('presente')} className="text-xs font-bold px-3 py-1.5 rounded-lg bg-green-100 text-green-700 hover:bg-green-200 transition-colors">Marcar todos presentes</button>
+              <button onClick={() => markAll('ausente')} className="text-xs font-bold px-3 py-1.5 rounded-lg bg-rose-100 text-rose-700 hover:bg-rose-200 transition-colors">Marcar todos ausentes</button>
             </div>
           </div>
 
@@ -150,16 +156,16 @@ export default function TeacherAttendance() {
                       </div>
                       <div className="flex gap-2">
                         <button 
-                          onClick={() => toggleStudent(student.id, 'Presente')}
-                          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${status === 'Presente' ? 'bg-green-500 text-white shadow-sm shadow-green-500/30' : 'bg-secondary text-muted-foreground hover:bg-green-100 hover:text-green-700'}`}
+                          onClick={() => toggleStudent(student.id, 'presente')}
+                          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${status === 'presente' ? 'bg-green-500 text-white shadow-sm shadow-green-500/30' : 'bg-secondary text-muted-foreground hover:bg-green-100 hover:text-green-700'}`}
                         >
-                          <CheckCircle2 className="w-4 h-4" /> Present
+                          <CheckCircle2 className="w-4 h-4" /> Presente
                         </button>
                         <button 
-                          onClick={() => toggleStudent(student.id, 'Ausente')}
-                          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${status === 'Ausente' ? 'bg-rose-500 text-white shadow-sm shadow-rose-500/30' : 'bg-secondary text-muted-foreground hover:bg-rose-100 hover:text-rose-700'}`}
+                          onClick={() => toggleStudent(student.id, 'ausente')}
+                          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${status === 'ausente' ? 'bg-rose-500 text-white shadow-sm shadow-rose-500/30' : 'bg-secondary text-muted-foreground hover:bg-rose-100 hover:text-rose-700'}`}
                         >
-                          <XCircle className="w-4 h-4" /> Absent
+                          <XCircle className="w-4 h-4" /> Ausente
                         </button>
                       </div>
                     </li>
@@ -175,10 +181,10 @@ export default function TeacherAttendance() {
           <div className="mt-8 flex justify-end">
             <button 
               onClick={handleSubmit} 
-              disabled={saveMutation.isPending || !students?.length}
+              disabled={saveMutation.isLoading || !students?.length}
               className="btn-primary w-full md:w-auto text-lg py-3 px-8"
             >
-              {saveMutation.isPending ? "Saving..." : "Submit Attendance"}
+              {saveMutation.isLoading ? "Guardando..." : "Enviar asistencia"}
             </button>
           </div>
         </div>

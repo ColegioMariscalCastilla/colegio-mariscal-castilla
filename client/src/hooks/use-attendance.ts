@@ -34,9 +34,9 @@ export function useSaveAttendanceBatch() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [api.attendance.list.path] });
-      toast.success("Attendance saved successfully");
+      toast.success("Asistencia guardada con éxito", { icon: '✅' });
     },
-    onError: () => toast.error("Failed to save attendance"),
+    onError: (err: any) => toast.error(err.message || "Error al guardar la asistencia", { icon: '❌' }),
   });
 }
 
@@ -55,7 +55,7 @@ export function useExportAttendance() {
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     },
-    onSuccess: () => toast.success("Export started"),
-    onError: () => toast.error("Export failed"),
+    onSuccess: () => toast.success("Exportación iniciada"),
+    onError: (err: any) => toast.error(err.message || "Error al exportar la asistencia"),
   });
 }

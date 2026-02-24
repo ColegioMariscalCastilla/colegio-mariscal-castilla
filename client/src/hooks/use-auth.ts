@@ -32,10 +32,10 @@ export function useAuth() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [api.auth.me.path] });
-      toast.success("Welcome back!");
+      toast.success("Bienvenido de nuevo");
     },
     onError: (err: Error) => {
-      toast.error(err.message);
+      toast.error(err.message || "Error al iniciar sesión");
     },
   });
 
@@ -50,7 +50,7 @@ export function useAuth() {
     onSuccess: () => {
       queryClient.setQueryData([api.auth.me.path], null);
       queryClient.clear();
-      toast.success("Logged out successfully");
+      toast.success("Cierre de sesión correcto");
     },
   });
 
@@ -58,8 +58,8 @@ export function useAuth() {
     user,
     isLoading,
     login: loginMutation.mutateAsync,
-    isLoggingIn: loginMutation.isPending,
+    isLoggingIn: loginMutation.isLoading,
     logout: logoutMutation.mutate,
-    isLoggingOut: logoutMutation.isPending,
+    isLoggingOut: logoutMutation.isLoading,
   };
 }

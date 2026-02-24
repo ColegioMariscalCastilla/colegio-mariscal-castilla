@@ -38,8 +38,8 @@ export default function Students() {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <PageHeader 
-        title="Students" 
-        description="Manage student records and assignments."
+        title="Alumnos" 
+        description="Administrar registros y asignaciones de alumnos."
         action={
           <button onClick={() => setIsModalOpen(true)} className="btn-primary flex items-center gap-2">
             <Plus className="w-4 h-4" /> Add Student
@@ -52,7 +52,7 @@ export default function Students() {
           <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input 
             type="text" 
-            placeholder="Search by name or DNI..." 
+            placeholder="Buscar por nombre o DNI..." 
             className="input-base pl-10"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -74,23 +74,23 @@ export default function Students() {
             <tbody>
               {filteredStudents.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="p-8 text-center text-muted-foreground">No students found.</td>
+                  <td colSpan={4} className="p-8 text-center text-muted-foreground">No se encontraron alumnos.</td>
                 </tr>
               ) : (
                 filteredStudents.map((student) => (
                   <tr key={student.id} className="border-b border-border hover:bg-secondary/20 transition-colors">
                     <td className="p-4 font-medium">{student.nombre}</td>
                     <td className="p-4 text-muted-foreground">{student.dni}</td>
-                    <td className="p-4">
+                      <td className="p-4">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                        {student.classroom?.nombre || 'Unassigned'}
+                        {student.classroom?.nombre || 'Sin asignar'}
                       </span>
                     </td>
                     <td className="p-4 text-right">
                       <button 
                         onClick={() => {
-                          if(confirm("Are you sure?")) deleteMutation.mutate(student.id);
-                        }}
+                            if(confirm("¿Estás seguro?")) deleteMutation.mutate(student.id);
+                          }}
                         className="p-2 text-destructive hover:bg-destructive/10 rounded-lg transition-colors inline-flex"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -104,10 +104,10 @@ export default function Students() {
         </div>
       </Card>
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Add New Student">
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Agregar nuevo alumno">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-bold mb-1">Full Name</label>
+            <label className="block text-sm font-bold mb-1">Nombre completo</label>
             <input required type="text" className="input-base" value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})} />
           </div>
           <div>
@@ -115,16 +115,16 @@ export default function Students() {
             <input required type="text" className="input-base" value={formData.dni} onChange={e => setFormData({...formData, dni: e.target.value})} />
           </div>
           <div>
-            <label className="block text-sm font-bold mb-1">Classroom</label>
+            <label className="block text-sm font-bold mb-1">Salón</label>
             <select required className="input-base" value={formData.classroomId} onChange={e => setFormData({...formData, classroomId: e.target.value})}>
-              <option value="">Select a classroom...</option>
+              <option value="">Seleccione un salón...</option>
               {classrooms?.map(c => (
                 <option key={c.id} value={c.id}>{c.nombre} ({c.turno})</option>
               ))}
             </select>
           </div>
           <div className="pt-4 border-t border-border">
-            <h3 className="text-sm font-bold text-muted-foreground mb-3">Student Login Credentials</h3>
+            <h3 className="text-sm font-bold text-muted-foreground mb-3">Credenciales del alumno</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-bold mb-1">Username</label>
@@ -137,9 +137,9 @@ export default function Students() {
             </div>
           </div>
           <div className="flex justify-end gap-3 pt-4">
-            <button type="button" onClick={() => setIsModalOpen(false)} className="btn-outline">Cancel</button>
-            <button type="submit" disabled={createMutation.isPending} className="btn-primary">
-              {createMutation.isPending ? "Creating..." : "Save Student"}
+            <button type="button" onClick={() => setIsModalOpen(false)} className="btn-outline">Cancelar</button>
+            <button type="submit" disabled={createMutation.isLoading} className="btn-primary">
+              {createMutation.isLoading ? "Creando..." : "Guardar alumno"}
             </button>
           </div>
         </form>
