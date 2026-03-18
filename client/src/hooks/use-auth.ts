@@ -8,12 +8,25 @@ export function useAuth() {
   const { data: user, isLoading, error } = useQuery({
     queryKey: [api.auth.me.path],
     queryFn: async () => {
-      const res = await fetch(api.auth.me.path, { credentials: "include" });
-      if (res.status === 401) return null;
-      if (!res.ok) throw new Error("Failed to fetch user");
-      return res.json(); // Relying on generic JSON parsing since it's an internal type
+      try {
+        const res = await fetch(api.auth.me.path, { 
+          credentials: "include",
+          signal: AbortSignal.timeout(5000) // 5 segundos timeout
+        });
+        if (res.status === 401) return null;
+        if (!res.ok) throw new Error("Failed to fetch user");
+        return res.json();
+      } catch (err: any) {
+        console.error("Auth error:", err);
+        if (err.name === 'AbortError') {
+          throw new Error("Connection timeout - please check your internet");
+        }
+        throw new Error("Connection failed");
+      }
     },
-    retry: false,
+    retry: 1,
+    retryDelay: 1000,
+    staleTime: 5 * 60 * 1000, // 5 minutos
   });
 
   const loginMutation = useMutation({
