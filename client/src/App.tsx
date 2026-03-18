@@ -32,14 +32,32 @@ function ProtectedRoute({ component: Component, allowedRoles }: { component: any
 }
 
 function Router() {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, error } = useAuth();
 
   if (isLoading) return <div className="min-h-screen flex items-center justify-center bg-background"><LoadingSpinner size="lg" /></div>;
+  
+  // Si hay error de conexión, mostrar página de error
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center p-8">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">Error de Conexión</h1>
+          <p className="text-gray-600 mb-4">No se pudo conectar con el servidor</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Switch>
       <Route path="/login">
-        {user ? <Redirect to="/" /> : <Login />}
+        {(user && user.id) ? <Redirect to="/" /> : <Login />}
       </Route>
 
       <Route path="/forgot-password">

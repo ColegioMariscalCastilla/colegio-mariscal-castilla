@@ -70,9 +70,12 @@ export function useAuth() {
   return {
     user,
     isLoading,
+    error,
+    loginMutation,
+    logoutMutation,
     login: loginMutation.mutateAsync,
     isLoggingIn: loginMutation.isPending,
-    logout: logoutMutation.mutate,
+    logout: logoutMutation.mutateAsync,
     isLoggingOut: logoutMutation.isPending,
   };
 }
