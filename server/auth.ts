@@ -6,6 +6,7 @@ import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage";
 import { User as SelectUser } from "@shared/schema";
+import { api } from "@shared/routes";
 
 declare global {
   namespace Express {
@@ -30,18 +31,38 @@ async function comparePasswords(supplied: string, stored: string) {
 
 export function setupAuth(app: Express) {
   const sessionSettings: session.SessionOptions = {
-    secret: process.env.SESSION_SECRET || "school-secret",
+    secret: process.env.SESSION_SECRET || (process.env.NODE_ENV === 'production' ? (() => {
+      throw new Error("SESSION_SECRET environment variable is required in production");
+    })() : "development-secret-key-change-in-production"),
     resave: false,
     saveUninitialized: false,
     store: storage.sessionStore,
     cookie: {
       secure: app.get("env") === "production",
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours por defecto
+      sameSite: 'lax'
     },
   };
 
   if (app.get("env") === "production") {
     app.set("trust proxy", 1);
   }
+
+  // Middleware personalizado para ajustar la duración de la sesión según rememberMe
+  app.use((req, res, next) => {
+    if (req.path === api.auth.login.path && req.method === "POST") {
+      const body = req.body;
+      if (body?.rememberMe) {
+        // Si rememberMe es true, extender la cookie a 30 días
+        req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // 30 días
+      } else {
+        // Si no, mantener 24 horas
+        req.session.cookie.maxAge = 24 * 60 * 60 * 1000; // 24 horas
+      }
+    }
+    next();
+  });
 
   app.use(session(sessionSettings));
   app.use(passport.initialize());
@@ -51,9 +72,15 @@ export function setupAuth(app: Express) {
     new LocalStrategy(async (username, password, done) => {
       try {
         const user = await storage.getUserByUsername(username);
-        if (!user || !(await comparePasswords(password, user.password))) {
-          return done(null, false, { message: "Invalid username or password" });
+        if (!user) {
+          return done(null, false);
         }
+        
+        const isMatch = await comparePasswords(password, user.password);
+        if (!isMatch) {
+          return done(null, false);
+        }
+        
         return done(null, user);
       } catch (err) {
         return done(err);

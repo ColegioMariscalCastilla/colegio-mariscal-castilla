@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "@shared/routes";
+import { api, buildUrl } from "@shared/routes";
 import toast from "react-hot-toast";
 
 export function useTeachers() {
@@ -28,8 +28,27 @@ export function useCreateTeacher() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [api.teachers.list.path] });
-      toast.success("Teacher created successfully");
+      toast.success("Profesor creado correctamente");
     },
-    onError: () => toast.error("Failed to create teacher"),
+    onError: () => toast.error("Error al crear el profesor"),
+  });
+}
+
+export function useDeleteTeacher() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const url = buildUrl(api.teachers.delete.path, { id });
+      const res = await fetch(url, {
+        method: api.teachers.delete.method,
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to delete teacher");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [api.teachers.list.path] });
+      toast.success("Profesor eliminado correctamente");
+    },
+    onError: () => toast.error("Error al eliminar el profesor"),
   });
 }

@@ -8,10 +8,13 @@ import { LoadingSpinner } from "@/components/ui-components";
 
 // Pages
 import Login from "@/pages/auth/login";
+import ForgotPassword from "@/pages/auth/forgot-password";
 import AdminDashboard from "@/pages/admin/dashboard";
 import Students from "@/pages/admin/students";
 import Teachers from "@/pages/admin/teachers";
 import Classrooms from "@/pages/admin/classrooms";
+import AttendanceHistory from "@/pages/admin/attendance-history";
+import StudentAttendance from "@/pages/admin/student-attendance";
 import TeacherAttendance from "@/pages/teacher/attendance";
 import StudentProfile from "@/pages/student/profile";
 import NotFound from "@/pages/not-found";
@@ -39,6 +42,10 @@ function Router() {
         {user ? <Redirect to="/" /> : <Login />}
       </Route>
 
+      <Route path="/forgot-password">
+        <ForgotPassword />
+      </Route>
+
       <Route path="/">
         {!user ? <Redirect to="/login" /> : 
          (user.rol || '').toString().toUpperCase() === 'DIRECTORA' ? <AppLayout><AdminDashboard /></AppLayout> :
@@ -56,6 +63,12 @@ function Router() {
       </Route>
       <Route path="/classrooms">
         <AppLayout><ProtectedRoute component={Classrooms} allowedRoles={['DIRECTORA']} /></AppLayout>
+      </Route>
+      <Route path="/attendance-history">
+        <AppLayout><ProtectedRoute component={AttendanceHistory} allowedRoles={['DIRECTORA']} /></AppLayout>
+      </Route>
+      <Route path="/students/:id/attendance">
+        <AppLayout><ProtectedRoute component={StudentAttendance} allowedRoles={['DIRECTORA']} /></AppLayout>
       </Route>
 
       {/* Fallback to 404 */}

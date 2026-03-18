@@ -17,7 +17,7 @@ export function useAuth() {
   });
 
   const loginMutation = useMutation({
-    mutationFn: async (credentials: any) => {
+    mutationFn: async (credentials: { username: string; password: string; rememberMe?: boolean }) => {
       const res = await fetch(api.auth.login.path, {
         method: api.auth.login.method,
         headers: { "Content-Type": "application/json" },
@@ -58,8 +58,8 @@ export function useAuth() {
     user,
     isLoading,
     login: loginMutation.mutateAsync,
-    isLoggingIn: loginMutation.isLoading,
+    isLoggingIn: loginMutation.isPending,
     logout: logoutMutation.mutate,
-    isLoggingOut: logoutMutation.isLoading,
+    isLoggingOut: logoutMutation.isPending,
   };
 }

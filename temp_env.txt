@@ -1,0 +1,1 @@
+DATABASE_URL=postgresql://postgres:clancito548@localhost:5432/mariscal_castilla

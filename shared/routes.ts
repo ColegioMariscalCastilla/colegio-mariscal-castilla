@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { insertUserSchema, insertClassroomSchema, insertTeacherSchema, insertStudentSchema, insertAttendanceSchema, users, classrooms, teachers, students, attendance } from "./schema";
+import { insertUserSchema, insertClassroomSchema, updateClassroomSchema, insertTeacherSchema, insertStudentSchema, insertAttendanceSchema, users, classrooms, teachers, students, attendance } from "./schema";
 
 export const errorSchemas = {
   validation: z.object({ message: z.string(), field: z.string().optional() }),
@@ -50,6 +50,21 @@ export const api = {
       responses: {
         201: z.custom<typeof classrooms.$inferSelect>(),
       }
+    },
+    update: {
+      method: "PATCH" as const,
+      path: "/api/classrooms/:id" as const,
+      input: updateClassroomSchema,
+      responses: {
+        200: z.custom<typeof classrooms.$inferSelect>(),
+      }
+    },
+    delete: {
+      method: "DELETE" as const,
+      path: "/api/classrooms/:id" as const,
+      responses: {
+        204: z.void(),
+      }
     }
   },
   teachers: {
@@ -66,6 +81,13 @@ export const api = {
       input: insertTeacherSchema.extend({ password: z.string(), username: z.string() }), 
       responses: {
         201: z.custom<typeof teachers.$inferSelect>(),
+      }
+    },
+    delete: {
+      method: "DELETE" as const,
+      path: "/api/teachers/:id" as const,
+      responses: {
+        204: z.void(),
       }
     }
   },

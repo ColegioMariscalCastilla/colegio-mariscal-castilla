@@ -31,9 +31,9 @@ export function useCreateStudent() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [api.students.list.path] });
-      toast.success("Student created successfully");
+      toast.success("Alumno creado correctamente");
     },
-    onError: () => toast.error("Failed to create student"),
+    onError: () => toast.error("Error al crear el alumno"),
   });
 }
 
@@ -53,9 +53,9 @@ export function useUpdateStudent() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [api.students.list.path] });
-      toast.success("Student updated successfully");
+      toast.success("Alumno actualizado correctamente");
     },
-    onError: () => toast.error("Failed to update student"),
+    onError: () => toast.error("Error al actualizar el alumno"),
   });
 }
 
@@ -72,8 +72,8 @@ export function useDeleteStudent() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [api.students.list.path] });
-      toast.success("Student deleted");
+      toast.success("Alumno eliminado");
     },
-    onError: () => toast.error("Failed to delete student"),
+    onError: () => toast.error("Error al eliminar el alumno"),
   });
 }
