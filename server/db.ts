@@ -6,7 +6,7 @@ import { drizzle } from "drizzle-orm/node-postgres"
 dotenv.config();
 
 // Configuración para la base de datos con variables de entorno
-const DATABASE_URL = process.env.DATABASE_URL || "postgresql://postgres:Clancito548*@localhost:5432/mariscal_castilla";
+const DATABASE_URL = process.env.DATABASE_URL || "postgresql://postgres:clancito548@localhost:5432/mariscal_castilla";
 
 if (!process.env.DATABASE_URL) {
   console.error("⚠️ ADVERTENCIA: DATABASE_URL no está configurado. Usando localhost.");
