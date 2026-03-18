@@ -1,6 +1,11 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "client/dist",
-  "installCommand": "npm install",
-  "framework": "vite"
+  "installCommand": "npm install --force",
+  "framework": "vite",
+  "functions": {
+    "server/index.ts": {
+      "maxDuration": 30
+    }
+  }
 }
