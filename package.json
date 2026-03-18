@@ -69,7 +69,6 @@
     "ws": "^8.18.0",
     "fs-extra": "^11.2.0",
     "@vitejs/plugin-react": "^4.7.0",
-    "@vitejs/plugin-react": "^4.7.0",
     "recharts": "^2.15.2",
     "embla-carousel-react": "^8.6.0",
     "cmdk": "^1.1.1",
