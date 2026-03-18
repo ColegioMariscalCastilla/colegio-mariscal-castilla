@@ -1,7 +1,5 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "client/dist",
-  "installCommand": "npm cache clean --force && npm install",
-  "framework": "vite",
-  "_comment": "Clean npm cache before install to avoid --force warning"
+  "framework": "vite"
 }
