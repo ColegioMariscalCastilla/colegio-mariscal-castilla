@@ -1,7 +1,7 @@
-import { db, pool } from "./db.js";
+import { db, pool } from "./db";
 import { eq, and } from "drizzle-orm";
-import { users, classrooms, teachers, students, attendance, attendanceTime } from "../shared/schema.js";
-import type { User, InsertUser, Classroom, InsertClassroom, Teacher, InsertTeacher, Student, InsertStudent, Attendance, InsertAttendance, AttendanceTime, InsertAttendanceTime } from "../shared/schema.js";
+import { users, classrooms, teachers, students, attendance, attendanceTime } from "../shared/schema";
+import type { User, InsertUser, Classroom, InsertClassroom, Teacher, InsertTeacher, Student, InsertStudent, Attendance, InsertAttendance, AttendanceTime, InsertAttendanceTime } from "../shared/schema";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
 
