@@ -46,7 +46,7 @@
     "class-variance-authority": "^0.7.1",
     "date-fns": "^3.6.0",
     "ws": "^8.18.0",
-    "scrypt": "^0.3.0"
+    "scrypt": "^8.0.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
