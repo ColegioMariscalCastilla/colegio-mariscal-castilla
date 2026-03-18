@@ -46,7 +46,7 @@
     "class-variance-authority": "^0.7.1",
     "date-fns": "^3.6.0",
     "ws": "^8.18.0",
-    "scrypt": "^8.0.0",
+    "scrypt": "^6.3.2",
     "fs-extra": "^11.2.0"
   },
   "devDependencies": {
