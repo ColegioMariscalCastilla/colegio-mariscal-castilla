@@ -29,9 +29,10 @@ const httpServer = createServer(app);
       serveStatic(app);
     }
 
-    console.log("🔄 Starting HTTP server on port 3000...");
-    httpServer.listen(3000, () => {
-      console.log("🚀 Server is running on http://localhost:3000");
+    console.log("🔄 Starting HTTP server...");
+    const PORT = process.env.PORT || 3000;
+    httpServer.listen(PORT, () => {
+      console.log(`🚀 Server is running on port ${PORT}`);
       console.log("📡 API endpoints available:");
       console.log("   - POST /api/login");
       console.log("   - GET  /api/dashboard/stats");
