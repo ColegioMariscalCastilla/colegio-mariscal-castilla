@@ -2,12 +2,12 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
-import { api } from "@shared/routes";
+import { api } from "../../shared/routes";
 import { z } from "zod";
 import passport from "passport";
 import { db, pool } from "./db";
 import { eq, and, inArray } from "drizzle-orm";
-import { users, students, teachers, classrooms, attendance, attendanceTime } from "@shared/schema";
+import { users, students, teachers, classrooms, attendance, attendanceTime } from "../../shared/schema";
 
 export async function registerRoutes(
   httpServer: Server,
