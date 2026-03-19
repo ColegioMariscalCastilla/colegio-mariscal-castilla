@@ -15,6 +15,11 @@ export async function registerRoutes(
 ): Promise<Server> {
   const { hashPassword } = setupAuth(app);
 
+  // Redirigir raíz al login
+  app.get("/", (req, res) => {
+    res.redirect("/login");
+  });
+
   app.post(api.auth.login.path, passport.authenticate("local"), (req, res) => {
     res.status(200).json(req.user);
   });
